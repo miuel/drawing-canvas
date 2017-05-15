@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+  <p class="p">Draw doing mouse move || Dibuja moviendo el ratón</p>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+  const canvas = document.querySelector('#draw');
+  const ctx = canvas.getContext('2d');
+  canvas.width =  window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  ctx.strokeStyle = '#BADA55';
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.lineWidth = 50;
+  //ctx.globalCompositeOperation = 'multiply';
+  
+
+  // este let es para que dibuje solo cuando este haciend mousemove 
+  let isDrawing = false;
+  // estas let las usare para que el lapiz empiece en 0 de x y 0 de y 
+  let lastX = 0;
+  let lastY = 0;
+  let hue = 0;
+  let direction = true;
+
+  function draw(e) {
+    if(!isDrawing) return;
+    console.log(e)
+    ctx.beginPath();
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    // start from 
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+
+    hue ++;
+    if(hue >= 360) {
+      hue = 0;
+    }       
+     
+    if(ctx.lineWidth >= 50 || ctx.lineWidth <= 1) {
+       direction = !direction;
+    }
+    if(direction) {
+      ctx.lineWidth++;
+    } else {
+      ctx.lineWidth--; 
+    }
+  }
+
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
+
+
+
+</script>
+
+<style>
+  html, body {
+    margin:0;
+  }
+  .p {
+    position: absolute;
+    top:5px;
+    left: 5%;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding:0;
+    color: darkslategrey;
+  }
+</style>
+
+</body>
+</html>
